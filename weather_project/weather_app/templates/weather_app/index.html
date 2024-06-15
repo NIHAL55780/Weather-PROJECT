@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label, input, button {
+            display: block;
+            margin: 10px 0;
+        }
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        .weather-container, .forecast-container {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            text-align: center;
+        }
+        .forecast {
+            display: inline-block;
+            width: 18%;
+            margin: 0 1%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fafafa;
+            text-align: center;
+        }
+        h1, h2, h3 {
+            margin: 10px 0;
+        }
+        img {
+            vertical-align: middle;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather App</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" required placeholder="Enter city">
+        <button type="submit">Get Weather</button>
+    </form>
+
+    {% if weather_data %}
+    <div class="weather-container">
+        <h1>{{ weather_data.city }}</h1>
+        <h2>{{ weather_data.temperature }}°C</h2>
+        <p>{{ weather_data.description }}</p>
+        <p>Wind Speed: {{ weather_data.wind_speed }} m/s</p>
+        <img src="http://openweathermap.org/img/wn/{{ weather_data.icon }}@2x.png" alt="{{ weather_data.description }}">
+    </div>
+    {% endif %}
+
+    {% if daily_forecasts %}
+    <div class="forecast-container">
+        <h2>5-Day Forecast for {{ weather_data.city }}</h2>
+        {% for forecast in daily_forecasts %}
+        <div class="forecast">
+            <h3>{{ forecast.day }}</h3>
+            <p>{{ forecast.min_temp }}°C - {{ forecast.max_temp }}°C</p>
+            <p>{{ forecast.description }}</p>
+            <p>Wind Speed: {{ forecast.wind_speed }} m/s</p>
+            <img src="http://openweathermap.org/img/wn/{{ forecast.icon }}@2x.png" alt="{{ forecast.description }}">
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</body>
+</html>
